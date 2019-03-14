@@ -16,9 +16,9 @@ type GaugeSuiteStartHandlerFn func(result *gauge_messages.ExecutionStartingReque
 type GaugeResultHandlerFn func(result *gauge_messages.SuiteExecutionResult)
 
 type Listener struct {
-	connection      	net.Conn
-	onResultHandler 	GaugeResultHandlerFn
-	onSuiteStartHandler	GaugeSuiteStartHandlerFn
+	connection          net.Conn
+	onResultHandler     GaugeResultHandlerFn
+	onSuiteStartHandler GaugeSuiteStartHandlerFn
 }
 
 func NewGaugeListener(host string, port string) (*Listener, error) {
@@ -66,7 +66,7 @@ func (listener *Listener) processMessages(buffer *bytes.Buffer) {
 					listener.connection.Close()
 					os.Exit(0)
 				case gauge_messages.Message_ExecutionStarting:
-					listener.onResultHandler(message.GetSuiteExecutionResult())
+					listener.onSuiteStartHandler(message.GetExecutionStartingRequest())
 				case gauge_messages.Message_SuiteExecutionResult:
 					listener.onResultHandler(message.GetSuiteExecutionResult())
 				}
