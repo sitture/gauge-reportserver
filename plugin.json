@@ -1,0 +1,23 @@
+{
+  "id" : "report-server",
+  "version" : "0.1.0",
+  "name" : "Report Server",
+  "description" : "Plugin for sending results to HTTP file server",
+  "install": {
+    "windows": [],
+    "linux": [],
+    "darwin": []
+  },
+  "command" : {
+    "windows" : ["bin/report-server"],
+    "linux" : ["bin/report-server"],
+    "darwin" : ["bin/report-server"]
+  },
+  "scope" : ["execution"],
+  "gaugeVersionSupport": {
+    "minimum": "1.0.0",
+    "maximum": ""
+  },
+  "capabilities" : [
+  ]
+}
