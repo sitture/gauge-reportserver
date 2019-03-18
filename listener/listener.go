@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"time"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/haroon-sheikh/gauge-report-server/gauge_messages"
@@ -13,12 +14,16 @@ import (
 )
 
 type GaugeSuiteStartHandlerFn func(result *gauge_messages.ExecutionStartingRequest)
+type GaugeSuiteEndHandlerFn func(result *gauge_messages.ExecutionEndingRequest)
 type GaugeResultHandlerFn func(result *gauge_messages.SuiteExecutionResult)
+type GaugeKillProcessHandlerFn func(result *gauge_messages.KillProcessRequest)
 
 type Listener struct {
 	connection          net.Conn
 	onResultHandler     GaugeResultHandlerFn
 	onSuiteStartHandler GaugeSuiteStartHandlerFn
+	onSuiteEndHandler   GaugeSuiteEndHandlerFn
+	onKillHander        GaugeKillProcessHandlerFn
 }
 
 func NewGaugeListener(host string, port string) (*Listener, error) {
@@ -33,8 +38,16 @@ func (listener *Listener) OnSuiteStart(resultHandler GaugeSuiteStartHandlerFn) {
 	listener.onSuiteStartHandler = resultHandler
 }
 
+func (listener *Listener) OnSuiteEnd(resultHandler GaugeSuiteEndHandlerFn) {
+	listener.onSuiteEndHandler = resultHandler
+}
+
 func (listener *Listener) OnSuiteResult(resultHandler GaugeResultHandlerFn) {
 	listener.onResultHandler = resultHandler
+}
+
+func (listener *Listener) OnKill(resultHandler GaugeKillProcessHandlerFn) {
+	listener.onKillHander = resultHandler
 }
 
 func (listener *Listener) Start() {
@@ -46,11 +59,11 @@ func (listener *Listener) Start() {
 			return
 		}
 		buffer.Write(data[0:n])
-		listener.processMessages(buffer)
+		listener.ProcessMessages(buffer)
 	}
 }
 
-func (listener *Listener) processMessages(buffer *bytes.Buffer) {
+func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 	for {
 		messageLength, bytesRead := proto.DecodeVarint(buffer.Bytes())
 		if messageLength > 0 && messageLength < uint64(buffer.Len()) {
@@ -63,10 +76,14 @@ func (listener *Listener) processMessages(buffer *bytes.Buffer) {
 				switch message.MessageType {
 				case gauge_messages.Message_KillProcessRequest:
 					logger.Debug("Received Kill Message, exiting...")
+					listener.onKillHander(message.GetKillProcessRequest())
+					time.Sleep(9 * time.Second)
 					listener.connection.Close()
 					os.Exit(0)
 				case gauge_messages.Message_ExecutionStarting:
 					listener.onSuiteStartHandler(message.GetExecutionStartingRequest())
+				case gauge_messages.Message_ExecutionEnding:
+					listener.onSuiteEndHandler(message.GetExecutionEndingRequest())
 				case gauge_messages.Message_SuiteExecutionResult:
 					listener.onResultHandler(message.GetSuiteExecutionResult())
 				}
