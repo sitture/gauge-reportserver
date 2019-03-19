@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/haroon-sheikh/gauge-report-server/gauge_messages"
-	"github.com/haroon-sheikh/gauge-report-server/logger"
+	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
+	"github.com/haroon-sheikh/gauge-reportserver/logger"
 )
 
 type GaugeSuiteStartHandlerFn func(result *gauge_messages.ExecutionStartingRequest)

@@ -28,7 +28,7 @@ const (
 	bin               = "bin"
 	newDirPermissions = 0755
 	gauge             = "gauge"
-	report            = "report-server"
+	report            = "reportserver"
 	deploy            = "deploy"
 	pluginJSONFile    = "plugin.json"
 )

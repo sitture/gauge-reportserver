@@ -1,5 +1,5 @@
 {
-  "id" : "report-server",
+  "id" : "reportserver",
   "version" : "0.1.0",
   "name" : "Report Server",
   "description" : "Plugin for sending results to HTTP file server",
@@ -9,9 +9,9 @@
     "darwin": []
   },
   "command" : {
-    "windows" : ["bin/report-server"],
-    "linux" : ["bin/report-server"],
-    "darwin" : ["bin/report-server"]
+    "windows" : ["bin/reportserver"],
+    "linux" : ["bin/reportserver"],
+    "darwin" : ["bin/reportserver"]
   },
   "scope" : ["execution"],
   "gaugeVersionSupport": {

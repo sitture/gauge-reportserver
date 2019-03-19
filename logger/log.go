@@ -13,7 +13,7 @@ func Init() {
 	if strings.ToLower(env) == "debug" {
 		debug = true
 	}
-	log.SetPrefix("[report-server] ")
+	log.SetPrefix("[reportserver] ")
 }
 
 func Debug(format string, args ...string) {

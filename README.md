@@ -1,12 +1,21 @@
-# gauge-report-server
+# gauge-reportserver
 
 A simple gauge plugin that will send/post the generated html-report to a HTTP fileserver such as [gohttpserver](https://github.com/codeskyblue/gohttpserver).
 
 The aim of this plugin is to gather reports from mulitple projects into a `single` place for reference.
 
+## Installation
+
+
+
 ## Configuration
 
 // TODO
+
+### Recommendation
+
+// TODO
+    - extend plugin kill timeout
 
 ## Running `gohttpserver` locally
 

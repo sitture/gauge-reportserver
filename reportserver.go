@@ -3,9 +3,9 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/haroon-sheikh/gauge-report-server/env"
-	"github.com/haroon-sheikh/gauge-report-server/gauge_messages"
-	"github.com/haroon-sheikh/gauge-report-server/listener"
+	"github.com/haroon-sheikh/gauge-reportserver/env"
+	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
+	"github.com/haroon-sheikh/gauge-reportserver/listener"
 	"github.com/radovskyb/watcher"
 	"io"
 	"io/ioutil"
@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	ReportServer    = "report-server"
+	ReportServer    = "reportserver"
 	PluginActionEnv = ReportServer + "_action"
 	ExecutionAction = "execution"
 	GaugeHost       = "127.0.0.1"
