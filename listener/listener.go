@@ -3,14 +3,12 @@ package listener
 import (
 	"bytes"
 	"fmt"
-	"log"
-	"net"
-	"os"
-	"time"
-
 	"github.com/golang/protobuf/proto"
 	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
 	"github.com/haroon-sheikh/gauge-reportserver/logger"
+	"log"
+	"net"
+	"os"
 )
 
 type GaugeSuiteStartHandlerFn func(result *gauge_messages.ExecutionStartingRequest)
@@ -77,7 +75,6 @@ func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 				case gauge_messages.Message_KillProcessRequest:
 					logger.Debug("Received Kill Message, exiting...")
 					listener.onKillHander(message.GetKillProcessRequest())
-					time.Sleep(9 * time.Second)
 					listener.connection.Close()
 					os.Exit(0)
 				case gauge_messages.Message_ExecutionStarting:
