@@ -9,8 +9,8 @@ import (
 var debug bool
 
 func Init() {
-	var env = os.Getenv("GAUGE_LOG_LEVEL")
-	if strings.ToLower(env) == "debug" {
+	var logLevel = os.Getenv("GAUGE_LOG_LEVEL")
+	if strings.ToLower(logLevel) == "debug" {
 		debug = true
 	}
 	log.SetPrefix("[reportserver] ")
