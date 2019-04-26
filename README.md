@@ -29,4 +29,5 @@ The above should bring up the httpserver on port `8000` at `http://127.0.0.1:800
 
 ## License
 
-// TODO
+![GNU Public License version 3.0](http://www.gnu.org/graphics/gplv3-127x51.png)
+This project is licensed under the terms of [GNU Public License version 3.0](http://www.gnu.org/licenses/gpl-3.0.txt)
