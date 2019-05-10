@@ -24,27 +24,33 @@ const (
 
 var currentReportTimestamp = time.Now()
 
-type reportSender struct {
+type shipper struct {
 	result   *gauge_messages.SuiteExecutionResult
 	stopChan chan bool
 }
 
-func sendReport() {
+func ShipReport() {
 	stopChan := make(chan bool)
 	listener, err := listener.NewGaugeListener(GaugeHost, os.Getenv(GaugePortEnvVar), stopChan)
 	if err != nil {
 		fmt.Println("Could not create the gauge listener")
 		os.Exit(1)
 	}
-	r := &reportSender{stopChan: stopChan}
+	shipper := &shipper{stopChan: stopChan}
 	listener.OnSuiteStart(printme2)
 	listener.OnSuiteEnd(printme3)
-	listener.OnSuiteResult(r.printme)
+	listener.OnSuiteResult(shipper.Meta)
 	listener.OnKill(printme4)
 	listener.Start()
 }
 
-func SendReport() {
+func (shipper *shipper) Meta(suiteResult *gauge_messages.SuiteExecutionResult) {
+	SendReport(shipper.stopChan)
+}
+
+func SendReport(stop chan bool) {
+	defer func(s chan bool) { s <- true }(stop)
+	fmt.Println("HELLOOOOOOOOO1")
 	fmt.Printf("Successfully sent html-report to reportserver => ")
 }
 
@@ -68,13 +74,13 @@ func printme3(suiteResult *gauge_messages.ExecutionEndingRequest) {
 	//getMod()
 }
 
-func (r *reportSender) printme(suiteResult *gauge_messages.SuiteExecutionResult) {
+func (shipper *shipper) printme(suiteResult *gauge_messages.SuiteExecutionResult) {
 	//fmt.Println(suiteResult.GetSuiteResult().GetEnvironment())
 	//fmt.Println(suiteResult.GetSuiteResult())
 	//fmt.Println("HELLO, SuiteExecutionResult!")
 	//dir, _ := os.Getwd()
 	//fmt.Println(dir)
-	time.Sleep(30 * time.Second)
+	//time.Sleep(30 * time.Second)
 	//fmt.Println(getMod().After(currentReportTimestamp))
 	////stdout()
 	////fmt.Println(std2())
