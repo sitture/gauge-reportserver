@@ -24,17 +24,33 @@ const (
 
 var currentReportTimestamp = time.Now()
 
+type reportSender struct {
+	result   *gauge_messages.SuiteExecutionResult
+	stopChan chan bool
+}
+
 func sendReport() {
-	listener, err := listener.NewGaugeListener(GaugeHost, os.Getenv(GaugePortEnvVar))
+	stopChan := make(chan bool)
+	listener, err := listener.NewGaugeListener(GaugeHost, os.Getenv(GaugePortEnvVar), stopChan)
 	if err != nil {
 		fmt.Println("Could not create the gauge listener")
 		os.Exit(1)
 	}
+	r := &reportSender{stopChan: stopChan}
 	listener.OnSuiteStart(printme2)
 	listener.OnSuiteEnd(printme3)
-	listener.OnSuiteResult(printme)
+	listener.OnSuiteResult(r.printme)
 	listener.OnKill(printme4)
 	listener.Start()
+}
+
+func SendReport() {
+	fmt.Printf("Successfully sent html-report to reportserver => ")
+}
+
+func sendme(stop chan bool) {
+	defer func(s chan bool) { s <- true }(stop)
+	SendReport()
 }
 
 func printme2(suiteResult *gauge_messages.ExecutionStartingRequest) {
@@ -52,20 +68,36 @@ func printme3(suiteResult *gauge_messages.ExecutionEndingRequest) {
 	//getMod()
 }
 
-func printme(suiteResult *gauge_messages.SuiteExecutionResult) {
+func (r *reportSender) printme(suiteResult *gauge_messages.SuiteExecutionResult) {
 	//fmt.Println(suiteResult.GetSuiteResult().GetEnvironment())
 	//fmt.Println(suiteResult.GetSuiteResult())
 	//fmt.Println("HELLO, SuiteExecutionResult!")
 	//dir, _ := os.Getwd()
 	//fmt.Println(dir)
-	//time.Sleep(5 * time.Second)
+	time.Sleep(30 * time.Second)
 	//fmt.Println(getMod().After(currentReportTimestamp))
 	////stdout()
 	////fmt.Println(std2())
 	//capture()
-	a := env.GetReportsDir()
-	fmt.Println("Reports Dir: " + a)
-	IsReportGenerated()
+	//a := env.GetReportsDir()
+	//fmt.Println("Reports Dir: " + a)
+	//fmt.Println(IsReportGenerated())
+	//fmt.Println(getMod().After(currentReportTimestamp))
+	//
+	sendme(r.stopChan)
+	fmt.Println("HELLOOOOOOOOO1")
+	//var maxNoUpdates = 0
+	//for {
+	//	if maxNoUpdates < 5 {
+	//		if getMod().After(currentReportTimestamp) {
+	//			time.Sleep(100 * time.Millisecond)
+	//			maxNoUpdates = 0
+	//		}
+	//		maxNoUpdates++
+	//		continue
+	//	}
+	//	return
+	//}
 }
 
 func IsReportGenerated() (generated bool) {

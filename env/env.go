@@ -12,7 +12,7 @@ import (
 )
 
 func GetProjectRoot() string {
-	return GetEnv(common.GaugeProjectRootEnv)
+	return GetEnv(common.GaugeProjectRootEnv, true)
 }
 
 func GetCurrentExecutableDir() (string, string) {
@@ -28,7 +28,7 @@ func GetCurrentExecutableDir() (string, string) {
 }
 
 func GetReportsDir() (dir string) {
-	dir = GetEnv(env.GaugeReportsDir)
+	dir = GetEnv(env.GaugeReportsDir, true)
 	if filepath.IsAbs(dir) {
 		return
 	}
@@ -36,7 +36,7 @@ func GetReportsDir() (dir string) {
 	return
 }
 
-func GetEnv(envKey string) (value string) {
+func GetEnv(envKey string, exitOnMissing bool) (value string) {
 	value = os.Getenv(envKey)
 	if value == "" {
 		fmt.Printf("Environment variable '%s' is not set. \n", envKey)
@@ -46,7 +46,7 @@ func GetEnv(envKey string) (value string) {
 }
 
 var PluginKillTimeout = func() int {
-	value := GetEnv("plugin_kill_timeout")
+	value := GetEnv("plugin_kill_timeout", false)
 	if value == "" {
 		return 0
 	}

@@ -3,12 +3,15 @@ package listener
 import (
 	"bytes"
 	"fmt"
+	"github.com/getgauge/common"
 	"github.com/golang/protobuf/proto"
+	"github.com/haroon-sheikh/gauge-reportserver/env"
 	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
 	"github.com/haroon-sheikh/gauge-reportserver/logger"
 	"log"
 	"net"
 	"os"
+	"time"
 )
 
 type GaugeSuiteStartHandlerFn func(result *gauge_messages.ExecutionStartingRequest)
@@ -22,12 +25,13 @@ type Listener struct {
 	onSuiteStartHandler GaugeSuiteStartHandlerFn
 	onSuiteEndHandler   GaugeSuiteEndHandlerFn
 	onKillHander        GaugeKillProcessHandlerFn
+	stopChan            chan bool
 }
 
-func NewGaugeListener(host string, port string) (*Listener, error) {
+func NewGaugeListener(host string, port string, stopChan chan bool) (*Listener, error) {
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", host, port))
 	if err == nil {
-		return &Listener{connection: conn}, nil
+		return &Listener{connection: conn, stopChan: stopChan}, nil
 	}
 	return nil, err
 }
@@ -82,6 +86,7 @@ func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 				case gauge_messages.Message_ExecutionEnding:
 					listener.onSuiteEndHandler(message.GetExecutionEndingRequest())
 				case gauge_messages.Message_SuiteExecutionResult:
+					go listener.sendPings()
 					listener.onResultHandler(message.GetSuiteExecutionResult())
 				}
 				buffer.Next(messageBoundary)
@@ -93,4 +98,45 @@ func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 			return
 		}
 	}
+}
+
+func (listener *Listener) sendPings() {
+	msg := &gauge_messages.Message{
+		MessageId:   common.GetUniqueID(),
+		MessageType: gauge_messages.Message_KeepAlive,
+		KeepAlive:   &gauge_messages.KeepAlive{PluginId: "reportserver"},
+	}
+	m, err := proto.Marshal(msg)
+	if err != nil {
+		logger.Debug("Unable to marshal ping message, %s", err.Error())
+		return
+	}
+	ping := func(b []byte, c net.Conn) {
+		logger.Debug("reportserver sending a keep-alive ping")
+		l := proto.EncodeVarint(uint64(len(b)))
+		_, err := c.Write(append(l, b...))
+		if err != nil {
+			logger.Debug("Unable to send ping message, %s", err.Error())
+		}
+	}
+	ticker := time.NewTicker(interval())
+	defer func() { ticker.Stop() }()
+
+	for {
+		select {
+		case <-listener.stopChan:
+			logger.Debug("Stopping pings")
+			return
+		case <-ticker.C:
+			ping(m, listener.connection)
+		}
+	}
+}
+
+var interval = func() time.Duration {
+	v := env.PluginKillTimeout()
+	if v/2 < 2 {
+		return 2 * time.Second
+	}
+	return time.Duration(v * 1000 * 1000 * 1000 / 2)
 }
