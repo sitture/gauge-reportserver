@@ -6,6 +6,8 @@ import (
 	"github.com/haroon-sheikh/gauge-reportserver/env"
 	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
 	"github.com/haroon-sheikh/gauge-reportserver/listener"
+	"github.com/haroon-sheikh/gauge-reportserver/sender"
+	"github.com/haroon-sheikh/gauge-reportserver/zipper"
 	"github.com/radovskyb/watcher"
 	"io"
 	"io/ioutil"
@@ -50,7 +52,9 @@ func (shipper *shipper) Meta(suiteResult *gauge_messages.SuiteExecutionResult) {
 
 func SendReport(stop chan bool) {
 	defer func(s chan bool) { s <- true }(stop)
-	fmt.Println("HELLOOOOOOOOO1")
+	fmt.Println("SENDING ...")
+	zipper.ZipDir("/Users/has23/workspace/id/europa-e2e/reports/html-report/", "html-report.zip")
+	sender.SendArchive("http://localhost:8000/somedir", "html-report.zip")
 	fmt.Printf("Successfully sent html-report to reportserver => ")
 }
 

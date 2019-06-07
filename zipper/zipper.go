@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	OldIndexFilePath	= "/index.html"
-	NewIndexFilePath	= "/report.html"
+	OldIndexFilePath = "/index.html"
+	NewIndexFilePath = "/report.html"
 )
 
-func ZipReportDirectory(source, target string) error {
+func ZipDir(source, target string) error {
 
 	// check if sourceDir exists
 	if _, err := os.Stat(source); os.IsNotExist(err) {
@@ -59,13 +59,14 @@ func ZipReportDirectory(source, target string) error {
 		if info.IsDir() {
 			return nil
 		}
-
-		if path == source + OldIndexFilePath {
-			err := os.Rename(source + OldIndexFilePath, source + NewIndexFilePath)
-			if err != nil {
-				return err
-			}
-		}
+		// TODO move this out
+		// rename file before and after zipping.
+		//if path == source + OldIndexFilePath {
+		//	err := os.Rename(source + OldIndexFilePath, source + NewIndexFilePath)
+		//	if err != nil {
+		//		return err
+		//	}
+		//}
 
 		file, err := os.Open(path)
 		defer file.Close()
