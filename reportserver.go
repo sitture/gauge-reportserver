@@ -13,15 +13,18 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 )
 
 const (
-	ReportServer    = "reportserver"
-	PluginActionEnv = ReportServer + "_action"
-	ExecutionAction = "execution"
-	GaugeHost       = "127.0.0.1"
-	GaugePortEnvVar = "plugin_connection_port"
+	ReportServer      = "reportserver"
+	PluginActionEnv   = ReportServer + "_action"
+	ExecutionAction   = "execution"
+	GaugeHost         = "127.0.0.1"
+	GaugePortEnvVar   = "plugin_connection_port"
+	HtmlReportDir     = "html-report"
+	HtmlReportArchive = HtmlReportDir + ".zip"
 )
 
 var currentReportTimestamp = time.Now()
@@ -52,10 +55,14 @@ func (shipper *shipper) Meta(suiteResult *gauge_messages.SuiteExecutionResult) {
 
 func SendReport(stop chan bool) {
 	defer func(s chan bool) { s <- true }(stop)
-	fmt.Println("SENDING ...")
-	zipper.ZipDir("/Users/has23/workspace/id/europa-e2e/reports/html-report/", "html-report.zip")
-	sender.SendArchive("http://localhost:8000/somedir", "html-report.zip")
-	fmt.Printf("Successfully sent html-report to reportserver => ")
+	orig := env.GetReportsDir() + "/" + HtmlReportDir
+	dest := env.GetReportsDir() + "/" + HtmlReportArchive
+	if err := zipper.ZipDir(orig, dest); err != nil {
+		return
+	}
+	reportPath := "http://localhost:8000/" + filepath.Base(env.GetProjectRoot()) + "/" + "reports"
+	sender.SendArchive(reportPath, dest)
+	fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html")
 }
 
 func sendme(stop chan bool) {

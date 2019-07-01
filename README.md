@@ -29,9 +29,20 @@ Note: Make sure you have `docker` installed.
 
 ```bash
 docker run -it --rm -p 8000:8000 -v $PWD:/app/public --name gohttpserver codeskyblue/gohttpserver
+
+# OR you can use `docker-compose` to bring up the service.
+
+docker-compose up -d
 ```
 
 The above should bring up the httpserver on port `8000` at `http://127.0.0.1:8000`
+
+## Building locally
+
+```bash
+go run build/make.go
+go run build/make.go --install
+```
 
 ## :wave: Issues & Contributions
 

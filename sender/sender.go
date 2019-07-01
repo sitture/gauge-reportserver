@@ -9,22 +9,27 @@ import (
 	"os"
 )
 
-func SendArchive(url, file string) (err error) {
+func SendArchive(url, filePath string) (err error) {
 	// Prepare a form that you will submit to that URL.
 	var b bytes.Buffer
 	writer := multipart.NewWriter(&b)
 	// Add your image file
-	f, err := os.Open(file)
+	file, err := os.Open(filePath)
 	if err != nil {
 		return
 	}
-	defer f.Close()
-
-	fw, err := writer.CreateFormFile("file", file)
+	fi, err := file.Stat()
 	if err != nil {
 		return err
 	}
-	if _, err = io.Copy(fw, f); err != nil {
+
+	defer file.Close()
+
+	fw, err := writer.CreateFormFile("file", fi.Name())
+	if err != nil {
+		return err
+	}
+	if _, err = io.Copy(fw, file); err != nil {
 		return err
 	}
 
@@ -64,8 +69,14 @@ func SendArchive(url, file string) (err error) {
 	if res.StatusCode != http.StatusOK {
 		err = fmt.Errorf("bad status: %s", res.Status)
 	}
-	if err = os.Remove(file); err != nil {
+
+	RemoveArchive(filePath)
+
+	return
+}
+
+func RemoveArchive(filePath string) {
+	if err := os.Remove(filePath); err != nil {
 		return
 	}
-	return
 }
