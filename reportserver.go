@@ -6,6 +6,7 @@ import (
 	"github.com/haroon-sheikh/gauge-reportserver/env"
 	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
 	"github.com/haroon-sheikh/gauge-reportserver/listener"
+	"github.com/haroon-sheikh/gauge-reportserver/logger"
 	"github.com/haroon-sheikh/gauge-reportserver/sender"
 	"github.com/haroon-sheikh/gauge-reportserver/zipper"
 	"github.com/radovskyb/watcher"
@@ -38,7 +39,7 @@ func ShipReport() {
 	stopChan := make(chan bool)
 	listener, err := listener.NewGaugeListener(GaugeHost, os.Getenv(GaugePortEnvVar), stopChan)
 	if err != nil {
-		fmt.Println("Could not create the gauge listener")
+		logger.Debug("Could not create the gauge listener")
 		os.Exit(1)
 	}
 	shipper := &shipper{stopChan: stopChan}
@@ -56,12 +57,18 @@ func (shipper *shipper) Meta(suiteResult *gauge_messages.SuiteExecutionResult) {
 func SendReport(stop chan bool) {
 	defer func(s chan bool) { s <- true }(stop)
 	orig := env.GetReportsDir() + "/" + HtmlReportDir
+	logger.Debug("Origin report directory is '%s'", orig)
 	dest := env.GetReportsDir() + "/" + HtmlReportArchive
+	logger.Debug("Archive destination is '%s'", dest)
 	if err := zipper.ZipDir(orig, dest); err != nil {
 		return
 	}
-	reportPath := "http://localhost:8000/" + filepath.Base(env.GetProjectRoot()) + "/" + "reports"
-	sender.SendArchive(reportPath, dest)
+	reportPath := env.GetReportServerUrl()
+	fmt.Println(reportPath)
+	err := sender.SendArchive(reportPath, dest)
+	if err != nil {
+		logger.Printf(fmt.Sprintf("Could not send the archive from '%s' to '%s'\n %s", dest, reportPath, err))
+	}
 	fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html")
 }
 

@@ -16,7 +16,30 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## :gear: Configuration
 
-// TODO
+You can set the following environment variables to override the configuration OR by adding these to `env/default.properties`:
+
+`REPORTSERVER_HOST` - This is the base url of the http server. Default is set to `http://localhost:8000`
+`REPORTSERVER_BASE_DIR` - This is the base directory of your reports. Default is set to your project directory name.
+`REPORTSERVER_PATH` - This is path where you want the report files to go. if this is not specified, then the environment directory name is used as the path.
+
+Examples:
+
+```sh
+REPORTSERVER_HOST=http://myreportserver.com
+REPORTSERVER_BASE_DIR=myproject
+
+# Path on reportserver
+
+http://myreportserver.com/myproject/${env_directory}
+
+REPORTSERVER_HOST=http://myreportserver.com
+REPORTSERVER_BASE_DIR=myproject
+REPORTSERVER_PATH=test/test
+
+# Path on reportserver
+
+http://myreportserver.com/myproject/test/test/
+```
 
 ### :bulb: Recommendation
 

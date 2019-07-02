@@ -21,3 +21,7 @@ func Debug(format string, args ...string) {
 		log.Printf(format, args)
 	}
 }
+
+func Printf(format string, args ...string) {
+	log.Printf(format, args)
+}
