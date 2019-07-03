@@ -18,10 +18,10 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 You can set the following environment variables to override the configuration OR by adding these to `env/default.properties`:
 
-`REPORTSERVER_HOST` - This is the base url of the http server. Default is set to `http://localhost:8000`
-`REPORTSERVER_BASE_DIR` - This is the base directory of your reports. Default is set to your project directory name.
-`REPORTSERVER_PATH` - This is path where you want the report files to go. if this is not specified, then the environment directory name is used as the path.
-`REPORTSERVER_TIMEOUT_IN_SECONDS` - This is how long to wait for html-report to be ready before sending. Default is 15 seconds.
+- `REPORTSERVER_HOST` - This is the base url of the http server. Default is set to `http://localhost:8000`
+- `REPORTSERVER_BASE_DIR` - This is the base directory of your reports. Default is set to your project directory name.
+- `REPORTSERVER_PATH` - This is path where you want the report files to go. if this is not specified, then the environment directory name is used as the path.
+- `REPORTSERVER_TIMEOUT_IN_SECONDS` - This is how long to wait for html-report to be ready before sending. Default is 15 seconds.
 
 Examples:
 
