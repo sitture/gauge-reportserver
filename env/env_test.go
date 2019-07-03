@@ -5,6 +5,7 @@ import (
 	"github.com/getgauge/gauge/env"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestGetProjectRoot(t *testing.T) {
@@ -41,6 +42,45 @@ func TestGetReportsDir(t *testing.T) {
 	}
 }
 
+func TestGaugeLogsFile(t *testing.T) {
+	os.Setenv(common.GaugeProjectRootEnv, "/test/test-project")
+	defer func() { os.Unsetenv(common.GaugeProjectRootEnv) }()
+
+	logsFile := GaugeLogsFile()
+	expected := "/test/test-project/logs/gauge.log"
+	if logsFile != expected {
+		t.Errorf("GaugeLogsFile was incorrect, got: %s, want: %s.", logsFile, expected)
+	}
+}
+
+func TestReportServerTimeout(t *testing.T) {
+	timeout := ReportServerTimeout()
+	expected := DefaultTimeout * time.Second
+	if timeout != expected {
+		t.Errorf("ReportServerTimeout was incorrect, got: %s, want: %s.", timeout, expected)
+	}
+}
+
+func TestReportServerTimeoutCustom(t *testing.T) {
+	os.Setenv(ReportServerTimeoutEnv, "20")
+	defer func() { os.Unsetenv(ReportServerTimeoutEnv) }()
+	timeout := ReportServerTimeout()
+	expected := 20 * time.Second
+	if timeout != expected {
+		t.Errorf("ReportServerTimeout was incorrect, got: %s, want: %s.", timeout, expected)
+	}
+}
+
+func TestReportServerTimeoutInvalid(t *testing.T) {
+	os.Setenv(ReportServerTimeoutEnv, "invalid")
+	defer func() { os.Unsetenv(ReportServerTimeoutEnv) }()
+	timeout := ReportServerTimeout()
+	expected := DefaultTimeout * time.Second
+	if timeout != expected {
+		t.Errorf("ReportServerTimeout was incorrect, got: %s, want: %s.", timeout, expected)
+	}
+}
+
 func TestGetReportServerHostDefault(t *testing.T) {
 	reportServerUrl := GetReportServerHost()
 	if reportServerUrl != DefaultHost {
@@ -70,10 +110,10 @@ func TestGetReportServerUrlDefaultEnv(t *testing.T) {
 
 func TestGetReportServerUrlCustomEnv(t *testing.T) {
 	os.Setenv(common.GaugeProjectRootEnv, "/test/test-project")
-	os.Setenv(GaugeEnvironmentEnv, "test")
+	os.Setenv(env.GaugeEnvironment, "test")
 	defer func() {
 		os.Unsetenv(common.GaugeProjectRootEnv)
-		os.Unsetenv(GaugeEnvironmentEnv)
+		os.Unsetenv(env.GaugeEnvironment)
 	}()
 	reportServerUrl := GetReportServerUrl()
 	expected := "http://localhost:8000/test-project/test"

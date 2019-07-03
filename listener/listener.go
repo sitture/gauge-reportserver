@@ -14,18 +14,12 @@ import (
 	"time"
 )
 
-type GaugeSuiteStartHandlerFn func(result *gauge_messages.ExecutionStartingRequest)
-type GaugeSuiteEndHandlerFn func(result *gauge_messages.ExecutionEndingRequest)
 type GaugeResultHandlerFn func(result *gauge_messages.SuiteExecutionResult)
-type GaugeKillProcessHandlerFn func(result *gauge_messages.KillProcessRequest)
 
 type Listener struct {
-	connection          net.Conn
-	onResultHandler     GaugeResultHandlerFn
-	onSuiteStartHandler GaugeSuiteStartHandlerFn
-	onSuiteEndHandler   GaugeSuiteEndHandlerFn
-	onKillHander        GaugeKillProcessHandlerFn
-	stopChan            chan bool
+	connection      net.Conn
+	onResultHandler GaugeResultHandlerFn
+	stopChan        chan bool
 }
 
 func NewGaugeListener(host string, port string, stopChan chan bool) (*Listener, error) {
@@ -36,22 +30,9 @@ func NewGaugeListener(host string, port string, stopChan chan bool) (*Listener, 
 	return nil, err
 }
 
-func (listener *Listener) OnSuiteStart(resultHandler GaugeSuiteStartHandlerFn) {
-	listener.onSuiteStartHandler = resultHandler
-}
-
-func (listener *Listener) OnSuiteEnd(resultHandler GaugeSuiteEndHandlerFn) {
-	listener.onSuiteEndHandler = resultHandler
-}
-
 func (listener *Listener) OnSuiteResult(resultHandler GaugeResultHandlerFn) {
 	listener.onResultHandler = resultHandler
 }
-
-func (listener *Listener) OnKill(resultHandler GaugeKillProcessHandlerFn) {
-	listener.onKillHander = resultHandler
-}
-
 func (listener *Listener) Start() {
 	buffer := new(bytes.Buffer)
 	data := make([]byte, 8192)
@@ -78,13 +59,8 @@ func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 				switch message.MessageType {
 				case gauge_messages.Message_KillProcessRequest:
 					logger.Debug("Received Kill Message, exiting...")
-					listener.onKillHander(message.GetKillProcessRequest())
 					listener.connection.Close()
 					os.Exit(0)
-				case gauge_messages.Message_ExecutionStarting:
-					listener.onSuiteStartHandler(message.GetExecutionStartingRequest())
-				case gauge_messages.Message_ExecutionEnding:
-					listener.onSuiteEndHandler(message.GetExecutionEndingRequest())
 				case gauge_messages.Message_SuiteExecutionResult:
 					go listener.sendPings()
 					listener.onResultHandler(message.GetSuiteExecutionResult())
