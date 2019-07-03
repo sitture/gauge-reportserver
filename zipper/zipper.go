@@ -26,10 +26,10 @@ func ZipDir(source, target string) error {
 	}
 
 	zipfile, err := os.Create(target)
+	defer zipfile.Close()
 	if err != nil {
 		return err
 	}
-	defer zipfile.Close()
 
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()

@@ -105,5 +105,5 @@ func SendReport(stop chan bool) {
 	if err != nil {
 		logger.Printf(fmt.Sprintf("Could not send the archive from '%s' to '%s'\n %s", dest, reportPath, err))
 	}
-	fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html")
+	fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html\n")
 }
