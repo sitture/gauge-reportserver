@@ -11,7 +11,7 @@ jobs:
           command: go get ./...
       - run:
           name: Run Tests
-          command: go test ./...
+          command: go test ./... -cover
   deploy:
     docker:
       - image: maven:3-jdk-8-alpine
