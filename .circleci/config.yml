@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.12
-    working_directory: /go/src/github.com/haroon-sheikh/gauge-reportserver
+    working_directory: /go/src/github.com/sitture/gauge-reportserver
     steps:
       - checkout
       - run:

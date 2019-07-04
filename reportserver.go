@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/haroon-sheikh/gauge-reportserver/env"
-	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
-	"github.com/haroon-sheikh/gauge-reportserver/listener"
-	"github.com/haroon-sheikh/gauge-reportserver/logger"
-	"github.com/haroon-sheikh/gauge-reportserver/sender"
-	"github.com/haroon-sheikh/gauge-reportserver/zipper"
+	"github.com/sitture/gauge-reportserver/env"
+	"github.com/sitture/gauge-reportserver/gauge_messages"
+	"github.com/sitture/gauge-reportserver/listener"
+	"github.com/sitture/gauge-reportserver/logger"
+	"github.com/sitture/gauge-reportserver/sender"
+	"github.com/sitture/gauge-reportserver/zipper"
 	"os"
 	"path"
 	"strings"
