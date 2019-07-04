@@ -12,7 +12,33 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## :hammer_and_pick: Installation
 
-// TODO
+### Offline installation
+
+```sh
+gauge install reportserver
+```
+
+* Download the plugin from [Releases](../../releases)
+
+```sh
+gauge install reportserver --file reportserver-${version}-darwin.x86_64.zip
+```
+
+### Using the plugin
+
+Add `reportserver` to your project's `manifest.json`.
+
+E.g.
+
+```json
+{
+  "Language": "java",
+  "Plugins": [
+    "html-report",
+    "reportserver"
+  ]
+}
+```
 
 ## :gear: Configuration
 
@@ -39,11 +65,6 @@ REPORTSERVER_PATH=test/test
 # Path on reportserver
 http://myreportserver.com/myproject/test/test/
 ```
-
-### :bulb: Recommendation
-
-// TODO
-    - extend plugin kill timeout
 
 ## :electric_plug: Running `gohttpserver` locally
 
