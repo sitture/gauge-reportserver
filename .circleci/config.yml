@@ -12,6 +12,9 @@ jobs:
       - run:
           name: Run Tests
           command: go test ./... -cover
+      - run:
+          name: Make Binaries
+          command: go run build/make.go --all-platforms
   deploy:
     docker:
       - image: maven:3-jdk-8-alpine
