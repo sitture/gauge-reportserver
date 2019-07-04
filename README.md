@@ -31,8 +31,6 @@ gauge install reportserver --file reportserver-${version}-darwin.x86_64.zip
 
 Add `reportserver` to your project's `manifest.json`.
 
-E.g.
-
 ```json
 {
   "Language": "java",
@@ -52,7 +50,7 @@ You can set the following environment variables to override the configuration OR
 - `REPORTSERVER_PATH` - This is path where you want the report files to go. if this is not specified, then the environment directory name is used as the path.
 - `REPORTSERVER_TIMEOUT_IN_SECONDS` - This is how long to wait for html-report to be ready before sending. Default is 15 seconds.
 
-Examples:
+### Examples
 
 ```sh
 REPORTSERVER_HOST=http://myreportserver.com
