@@ -12,7 +12,34 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## :hammer_and_pick: Installation
 
-// TODO
+* Install the plugin
+* `gohttpserver` running somewhere, or refer to [Running gohttpserver locally](#electric_plug-running-gohttpserver-locally)
+
+```sh
+gauge install reportserver
+```
+
+### Offline installation
+
+* Download the plugin from [Releases](../../releases)
+
+```sh
+gauge install reportserver --file reportserver-${version}-darwin.x86_64.zip
+```
+
+### Using the plugin
+
+Add `reportserver` to your project's `manifest.json`.
+
+```json
+{
+  "Language": "java",
+  "Plugins": [
+    "html-report",
+    "reportserver"
+  ]
+}
+```
 
 ## :gear: Configuration
 
@@ -23,7 +50,7 @@ You can set the following environment variables to override the configuration OR
 - `REPORTSERVER_PATH` - This is path where you want the report files to go. if this is not specified, then the environment directory name is used as the path.
 - `REPORTSERVER_TIMEOUT_IN_SECONDS` - This is how long to wait for html-report to be ready before sending. Default is 15 seconds.
 
-Examples:
+### Examples
 
 ```sh
 REPORTSERVER_HOST=http://myreportserver.com
@@ -40,22 +67,28 @@ REPORTSERVER_PATH=test/test
 http://myreportserver.com/myproject/test/test/
 ```
 
-### :bulb: Recommendation
-
-// TODO
-    - extend plugin kill timeout
-
 ## :electric_plug: Running `gohttpserver` locally
 
 Note: Make sure you have `docker` installed.
 
 ```bash
 docker run -it --rm -p 8000:8000 -v $PWD:/app/public --name gohttpserver codeskyblue/gohttpserver
-
-# OR you can use `docker-compose` to bring up the service.
-
-docker-compose up -d
 ```
+
+* You can also use `docker-compose` to bring up the service. Create a new file `docker-compose.yml` and add the following:
+
+```sh
+version: '2'
+services:
+  gohttpserver:
+    image: codeskyblue/gohttpserver
+    ports:
+      - '8000:8000'
+    volumes:
+      - '.:/app/public'
+```
+
+Run `docker-compose up -d` to bring up the gohttpserver in background.
 
 The above should bring up the httpserver on port `8000` at `http://127.0.0.1:8000`
 

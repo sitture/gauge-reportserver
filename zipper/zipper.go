@@ -8,11 +8,6 @@ import (
 	"strings"
 )
 
-const (
-	OldIndexFilePath = "/index.html"
-	NewIndexFilePath = "/report.html"
-)
-
 func ZipDir(source, target string) error {
 
 	// check if sourceDir exists
@@ -59,20 +54,13 @@ func ZipDir(source, target string) error {
 		if info.IsDir() {
 			return nil
 		}
-		// TODO move this out
-		// rename file before and after zipping.
-		//if path == source + OldIndexFilePath {
-		//	err := os.Rename(source + OldIndexFilePath, source + NewIndexFilePath)
-		//	if err != nil {
-		//		return err
-		//	}
-		//}
 
 		file, err := os.Open(path)
 		defer file.Close()
 		if err != nil {
 			return err
 		}
+
 		_, err = io.Copy(writer, file)
 
 		return err

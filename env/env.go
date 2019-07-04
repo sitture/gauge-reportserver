@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/getgauge/common"
 	"github.com/getgauge/gauge/env"
-	"github.com/haroon-sheikh/gauge-reportserver/logger"
+	"github.com/sitture/gauge-reportserver/logger"
 	"log"
 	"net/url"
 	"os"

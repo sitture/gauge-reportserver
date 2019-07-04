@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/haroon-sheikh/gauge-reportserver/env"
-	"github.com/haroon-sheikh/gauge-reportserver/gauge_messages"
-	"github.com/haroon-sheikh/gauge-reportserver/listener"
-	"github.com/haroon-sheikh/gauge-reportserver/logger"
-	"github.com/haroon-sheikh/gauge-reportserver/sender"
-	"github.com/haroon-sheikh/gauge-reportserver/zipper"
+	"github.com/sitture/gauge-reportserver/env"
+	"github.com/sitture/gauge-reportserver/gauge_messages"
+	"github.com/sitture/gauge-reportserver/listener"
+	"github.com/sitture/gauge-reportserver/logger"
+	"github.com/sitture/gauge-reportserver/sender"
+	"github.com/sitture/gauge-reportserver/zipper"
 	"os"
 	"path"
 	"strings"
@@ -22,6 +22,10 @@ const (
 	GaugePortEnvVar   = "plugin_connection_port"
 	HtmlReportDir     = "html-report"
 	HtmlReportArchive = HtmlReportDir + ".zip"
+	// OldIndexFilePath is the name of index file
+	OldIndexFile 	  = "index.html"
+	// NewIndexFilePath is the name of the new index file
+	NewIndexFile 	  = "report.html"
 )
 
 var currentReportTimestamp = time.Now()
@@ -97,6 +101,14 @@ func SendReport(stop chan bool) {
 	logger.Debug("Origin report directory is '%s'", orig)
 	dest := path.Join(env.GetReportsDir(), HtmlReportArchive)
 	logger.Debug("Archive destination is '%s'", dest)
+	// Rename index.html to report.html
+	if err := RenameIndexFile(orig, OldIndexFile, NewIndexFile); err != nil {
+		logger.Printf("Could not rename file from '%s' to '%s'.", OldIndexFile, NewIndexFile)
+	}
+	// Check and delete existing archive
+	if err := RemoveExistingArchive(dest); err != nil {
+		logger.Printf("Could not remove archive '%s'.", dest)
+	}
 	if err := zipper.ZipDir(orig, dest); err != nil {
 		return
 	}
@@ -104,6 +116,25 @@ func SendReport(stop chan bool) {
 	err := sender.SendArchive(reportPath, dest)
 	if err != nil {
 		logger.Printf(fmt.Sprintf("Could not send the archive from '%s' to '%s'\n %s", dest, reportPath, err))
+	} else {
+		fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html\n")
 	}
-	fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html\n")
+	// Check and delete existing archive
+	if err := RemoveExistingArchive(dest); err != nil {
+		logger.Printf("Could not remove archive '%s'.", dest)
+	}
+}
+
+func RenameIndexFile(dir, from, to string) (err error) {
+	logger.Debug("renaming index file to '%s'", to)
+	err = os.Rename(path.Join(dir, from), path.Join(dir, to))
+	return
+}
+
+func RemoveExistingArchive(archivePath string) (err error) {
+	logger.Debug("removing archive '%s'", archivePath)
+	if _, err := os.Stat(archivePath); err == nil {
+		err = os.Remove(archivePath)
+	}
+	return
 }
