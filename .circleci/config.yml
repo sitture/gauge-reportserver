@@ -30,6 +30,7 @@ jobs:
       - run:
           name: Build and Release
           command: |
+            go run build/make.go --all-platforms
             go run build/make.go --all-platforms --distro
             .circleci/release.sh
 workflows:
