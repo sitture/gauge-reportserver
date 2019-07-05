@@ -15,11 +15,13 @@ import (
 )
 
 type GaugeResultHandlerFn func(result *gauge_messages.SuiteExecutionResult)
+type KillProcessRequestHandlerFn func(killProcessRequest *gauge_messages.KillProcessRequest)
 
 type Listener struct {
-	connection      net.Conn
-	onResultHandler GaugeResultHandlerFn
-	stopChan        chan bool
+	connection                  net.Conn
+	onResultHandler             GaugeResultHandlerFn
+	onKillProcessRequestHandler KillProcessRequestHandlerFn
+	stopChan                    chan bool
 }
 
 func NewGaugeListener(host string, port string, stopChan chan bool) (*Listener, error) {
@@ -33,6 +35,11 @@ func NewGaugeListener(host string, port string, stopChan chan bool) (*Listener, 
 func (listener *Listener) OnSuiteResult(resultHandler GaugeResultHandlerFn) {
 	listener.onResultHandler = resultHandler
 }
+
+func (listener *Listener) OnKillProcessRequest(killProcessRequestHandler KillProcessRequestHandlerFn) {
+	listener.onKillProcessRequestHandler = killProcessRequestHandler
+}
+
 func (listener *Listener) Start() {
 	buffer := new(bytes.Buffer)
 	data := make([]byte, 8192)
@@ -59,7 +66,11 @@ func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 				switch message.MessageType {
 				case gauge_messages.Message_KillProcessRequest:
 					logger.Debug("Received Kill Message, exiting...")
-					listener.connection.Close()
+					listener.onKillProcessRequestHandler(message.GetKillProcessRequest())
+					err := listener.connection.Close()
+					if err != nil {
+						logger.Debug("Failed to close the listener connection.")
+					}
 					os.Exit(0)
 				case gauge_messages.Message_SuiteExecutionResult:
 					go listener.sendPings()
