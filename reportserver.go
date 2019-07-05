@@ -135,14 +135,15 @@ func SendReport(stop chan bool) {
 		logger.Printf("Could not remove archive '%s'.", ArchiveDestination())
 	}
 	if err := zipper.ZipDir(ArchiveOrigin(), ArchiveDestination()); err != nil {
+		logger.Printf("error archiving the reports directory.\n%s", err.Error())
 		return
 	}
 	reportPath := env.GetReportServerUrl()
 	err := sender.SendArchive(reportPath, ArchiveDestination())
 	if err != nil {
-		logger.Printf(fmt.Sprintf("Could not send the archive from '%s' to '%s'\n %s", ArchiveDestination(), reportPath, err))
+		logger.Printf(fmt.Sprintf("Could not send the archive from '%s' to '%s'\n%s", ArchiveDestination(), reportPath, err.Error()))
 	} else {
-		fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html\n")
+		fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html")
 	}
 }
 

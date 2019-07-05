@@ -15,41 +15,34 @@ func SendArchive(url, filePath string) (err error) {
 	writer := multipart.NewWriter(&b)
 	// Add your image file
 	file, err := os.Open(filePath)
+	defer func() {
+		err := file.Close()
+		if err != nil {
+			return
+		}
+	}()
 	if err != nil {
-		return
+		return fmt.Errorf("error opening the file '%s'", filePath)
 	}
-	fi, err := file.Stat()
+	fileStat, err := file.Stat()
 	if err != nil {
-		return err
+		return fmt.Errorf("could not get file information")
 	}
-
-	defer file.Close()
-
-	fw, err := writer.CreateFormFile("file", fi.Name())
+	formWriter, err := writer.CreateFormFile("file", fileStat.Name())
 	if err != nil {
-		return err
+		return fmt.Errorf("error create a form writer")
 	}
-	if _, err = io.Copy(fw, file); err != nil {
-		return err
+	if _, err = io.Copy(formWriter, file); err != nil {
+		return fmt.Errorf("error copying file '%s' to form writer", file.Name())
 	}
-
-	// Add the other fields
-
-	//if fw, err = w.CreateFormField("key"); err != nil {
-	//	return
-	//}
-	//if _, err = fw.Write([]byte("KEY")); err != nil {
-	//	return
-	//}
-
+	// add auto unzip param to request
 	_ = writer.WriteField("unzip", "true")
 
-	// Don't forget to close the multipart writer.
+	// close the multipart writer.
 	// If you don't close it, your request will be missing the terminating boundary.
 	if err = writer.Close(); err != nil {
 		return err
 	}
-
 	// Now that you have a form, you can submit it to your handler.
 	req, err := http.NewRequest("POST", url, &b)
 	if err != nil {
@@ -67,16 +60,7 @@ func SendArchive(url, filePath string) (err error) {
 
 	// Check the response
 	if res.StatusCode != http.StatusOK {
-		err = fmt.Errorf("bad status: %s", res.Status)
+		return fmt.Errorf("bad status: %s", res.Status)
 	}
-
-	RemoveArchive(filePath)
-
 	return
-}
-
-func RemoveArchive(filePath string) {
-	if err := os.Remove(filePath); err != nil {
-		return
-	}
 }

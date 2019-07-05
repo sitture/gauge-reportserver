@@ -2,6 +2,7 @@ package zipper
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -12,14 +13,14 @@ func ZipDir(source, target string) error {
 
 	// check if sourceDir exists
 	if _, err := os.Stat(source); os.IsNotExist(err) {
-		return err
+		return fmt.Errorf("source directory '%s' does not exist", source)
 	}
-
+	// get absolute path of source directory
 	source, err := filepath.Abs(source)
 	if err != nil {
-		return err
+		return fmt.Errorf("could not get absolute path for the source directory '%s'", source)
 	}
-
+	// create a zip file at target
 	zipFile, err := os.Create(target)
 	defer func() {
 		err := zipFile.Close()
@@ -28,9 +29,9 @@ func ZipDir(source, target string) error {
 		}
 	}()
 	if err != nil {
-		return err
+		return fmt.Errorf("could not create the target archive at '%s'", target)
 	}
-
+	// create a new writer for writing into zip
 	archive := zip.NewWriter(zipFile)
 	defer func() {
 		err := archive.Close()
@@ -38,22 +39,19 @@ func ZipDir(source, target string) error {
 			return
 		}
 	}()
-
+	// list of files to ignore when adding to zip
 	ignoreFiles := []string{
 		"html-report",
 		".DS_Store",
-		"report.html",
 	}
-
 	err = filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-
+		// check file isn't in the ignored list
 		if contains(ignoreFiles, info.Name()) {
 			return nil
 		}
-
 		header, err := zip.FileInfoHeader(info)
 		if err != nil {
 			return err
@@ -70,7 +68,7 @@ func ZipDir(source, target string) error {
 		if err != nil {
 			return err
 		}
-
+		// skip if it's a directory
 		if info.IsDir() {
 			return nil
 		}
