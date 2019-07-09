@@ -10,6 +10,7 @@ import (
 	"github.com/sitture/gauge-reportserver/zipper"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -128,22 +129,22 @@ func SendReport(stop chan bool) {
 	defer func(s chan bool) { s <- true }(stop)
 	// Rename index.html to report.html
 	if err := RenameIndexFile(ArchiveOrigin(), OldIndexFile, NewIndexFile); err != nil {
-		logger.Printf("Could not rename file from '%s' to '%s'.", OldIndexFile, NewIndexFile)
+		logger.Printf("Could not rename file from '%s' to '%s'\n", OldIndexFile, NewIndexFile)
 	}
 	// Check and delete existing archive
 	if err := RemoveExistingArchive(ArchiveDestination()); err != nil {
-		logger.Printf("Could not remove archive '%s'.", ArchiveDestination())
+		logger.Printf("Could not remove archive '%s'\n", ArchiveDestination())
 	}
 	if err := zipper.ZipDir(ArchiveOrigin(), ArchiveDestination()); err != nil {
-		logger.Printf("error archiving the reports directory.\n%s", err.Error())
+		logger.Printf("error archiving the reports directory.\n%s\n", err.Error())
 		return
 	}
 	reportPath := env.GetReportServerUrl()
 	err := sender.SendArchive(reportPath, ArchiveDestination())
 	if err != nil {
-		logger.Printf(fmt.Sprintf("Could not send the archive from '%s' to '%s'\n%s", ArchiveDestination(), reportPath, err.Error()))
+		logger.Printf(fmt.Sprintf("Could not send the archive from '%s' to '%s'\n%s\n", ArchiveDestination(), reportPath, err.Error()))
 	} else {
-		fmt.Printf("Successfully sent html-report to reportserver => %s", reportPath+"/report.html")
+		fmt.Printf("Successfully sent html-report to reportserver => %s\n", filepath.Join(reportPath, "report.html"))
 	}
 }
 
