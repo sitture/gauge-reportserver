@@ -85,7 +85,7 @@ var ReportServerTimeout = func() time.Duration {
 	timeout := GetEnvWithDefault(ReportServerTimeoutEnv, "15")
 	int, err := strconv.ParseInt(timeout, 10, 64)
 	if err != nil {
-		logger.Printf("invalid value for '%s', setting to default", ReportServerTimeoutEnv)
+		logger.Infof("invalid value for '%s', setting to default", ReportServerTimeoutEnv)
 		return time.Duration(DefaultTimeout) * time.Second
 	}
 	return time.Duration(int) * time.Second
@@ -99,7 +99,7 @@ var GaugeLogsFile = func() string {
 func GetReportServerHost() (url string) {
 	url = GetEnv(ReportServerHostEnv, false)
 	if len(url) == 0 {
-		logger.Debug("Could not find '%s', setting to default '%s'.", ReportServerHostEnv, DefaultHost)
+		logger.Debugf("Could not find '%s', setting to default '%s'.", ReportServerHostEnv, DefaultHost)
 		url = DefaultHost
 	}
 	return
@@ -107,11 +107,11 @@ func GetReportServerHost() (url string) {
 
 func GetReportServerUrl() string {
 	baseDir := GetEnvWithDefault(ReportServerBaseDirEnv, GetProjectDirName())
-	logger.Debug("baseDir => '%s'", baseDir)
+	logger.Debugf("baseDir => '%s'", baseDir)
 	environment := GetEnvWithDefault(env.GaugeEnvironment, common.DefaultEnvDir)
-	logger.Debug("environment => '%s'", environment)
+	logger.Debugf("environment => '%s'", environment)
 	reportPath := GetEnv(ReportServerPathEnv, false)
-	logger.Debug("reportPath => '%s'", reportPath)
+	logger.Debugf("reportPath => '%s'", reportPath)
 	uri, err := url.Parse(GetReportServerHost())
 	if err != nil {
 		panic(err)
@@ -121,6 +121,6 @@ func GetReportServerUrl() string {
 	} else {
 		uri.Path = path.Join(uri.Path, baseDir, reportPath)
 	}
-	logger.Debug("reportserverurl => '%s'", uri.String())
+	logger.Debugf("reportserverurl => '%s'", uri.String())
 	return uri.String()
 }

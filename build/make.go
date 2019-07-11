@@ -66,7 +66,7 @@ func createPluginDistro(forAllPlatforms bool) {
 	} else {
 		createDistro()
 	}
-	log.Printf("Distributables created in directory => %s \n", deploy)
+	fmt.Printf("Distributables created in directory => %s \n", deploy)
 }
 
 func createDistro() {
@@ -146,7 +146,7 @@ func mirrorFile(src, dst string) error {
 }
 
 func mirrorDir(src, dst string) error {
-	log.Printf("Copying '%s' -> '%s'\n", src, dst)
+	fmt.Printf("Copying '%s' -> '%s'\n", src, dst)
 	err := filepath.Walk(src, func(path string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -164,7 +164,7 @@ func mirrorDir(src, dst string) error {
 }
 
 func set(envName, envValue string) {
-	log.Printf("%s = %s\n", envName, envValue)
+	fmt.Printf("%s = %s\n", envName, envValue)
 	err := os.Setenv(envName, envValue)
 	if err != nil {
 		panic(err)
@@ -175,7 +175,7 @@ func runProcess(command string, arg ...string) {
 	cmd := exec.Command(command, arg...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	log.Printf("Execute %v\n", cmd.Args)
+	fmt.Printf("Execute %v\n", cmd.Args)
 	err := cmd.Run()
 	if err != nil {
 		panic(err)
@@ -215,7 +215,7 @@ func copyFiles(files map[string]string, installDir string) {
 	for src, dst := range files {
 		base := filepath.Base(src)
 		installDst := filepath.Join(installDir, dst)
-		log.Printf("Copying %s -> %s\n", src, installDst)
+		fmt.Printf("Copying %s -> %s\n", src, installDst)
 		stat, err := os.Stat(src)
 		if err != nil {
 			panic(err)

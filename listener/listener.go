@@ -95,7 +95,7 @@ func (listener *Listener) sendPings() {
 	}
 	m, err := proto.Marshal(msg)
 	if err != nil {
-		logger.Debug("Unable to marshal ping message, %s", err.Error())
+		logger.Debugf("Unable to marshal ping message, %s", err.Error())
 		return
 	}
 	ping := func(b []byte, c net.Conn) {
@@ -103,7 +103,7 @@ func (listener *Listener) sendPings() {
 		l := proto.EncodeVarint(uint64(len(b)))
 		_, err := c.Write(append(l, b...))
 		if err != nil {
-			logger.Debug("Unable to send ping message, %s", err.Error())
+			logger.Debugf("Unable to send ping message, %s", err.Error())
 		}
 	}
 	ticker := time.NewTicker(interval())
