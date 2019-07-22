@@ -1,5 +1,7 @@
 # gauge-reportserver
 
+[![CircleCI](https://circleci.com/gh/sitture/gauge-reportserver.svg?style=shield&circle-token=d15c8724ef5d6592248c4c21e96a9a92f1462354)](https://circleci.com/gh/sitture/gauge-reportserver)
+
 A simple [Gauge](https://gauge.org/) plugin that will send (POST) the generated `html-report` to a HTTP fileserver such as [gohttpserver](https://github.com/codeskyblue/gohttpserver).
 
 The aim of this plugin is to gather reports from mulitple projects into a `single` place for reference.
