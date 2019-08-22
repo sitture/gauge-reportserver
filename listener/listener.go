@@ -8,7 +8,6 @@ import (
 	"github.com/sitture/gauge-reportserver/env"
 	"github.com/sitture/gauge-reportserver/gauge_messages"
 	"github.com/sitture/gauge-reportserver/logger"
-	"log"
 	"net"
 	"os"
 	"time"
@@ -59,9 +58,11 @@ func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 		if messageLength > 0 && messageLength < uint64(buffer.Len()) {
 			message := &gauge_messages.Message{}
 			messageBoundary := int(messageLength) + bytesRead
-			err := proto.Unmarshal(buffer.Bytes()[bytesRead:messageBoundary], message)
+			messageBytes := buffer.Bytes()[bytesRead:messageBoundary]
+			err := proto.Unmarshal(messageBytes, message)
 			if err != nil {
-				log.Printf("Failed to read proto message: %s\n", err.Error())
+				logger.Warnf("Failed to read proto message: %s\n", err.Error())
+				logger.Warnf("Message : %s\n", string(messageBytes))
 			} else {
 				switch message.MessageType {
 				case gauge_messages.Message_KillProcessRequest:
