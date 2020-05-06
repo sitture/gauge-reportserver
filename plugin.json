@@ -1,6 +1,6 @@
 {
   "id" : "reportserver",
-  "version" : "0.1.1",
+  "version" : "0.2.0",
   "name" : "Report Server",
   "description" : "Plugin for sending results to HTTP file server",
   "install": {
@@ -15,7 +15,7 @@
   },
   "scope" : ["execution"],
   "gaugeVersionSupport": {
-    "minimum": "1.0.0",
+    "minimum": "1.0.6",
     "maximum": ""
   },
   "capabilities" : [
