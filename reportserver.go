@@ -74,17 +74,14 @@ func IsReadyToShip() (ready bool) {
 			logger.Infof("html-report was not ready, Timed out!")
 			return
 		case <-ticker.C:
-			// do something
-			if ReadLogsFile(env.GaugeLogsFile()) {
-				return true
-			}
+			return ReadLogsFile(env.GaugeLogsFile())
 		}
 	}
 }
 
 func ReadLogsFile(logsFilePath string) (logLineExists bool) {
 	logLineExists = false
-	logLine := "Plugin [Html Report] with pid"
+	logLine := "Done generating HTML report"
 	// check if logsFilePath exists
 	if _, err := os.Stat(logsFilePath); os.IsNotExist(err) {
 		logLineExists = false

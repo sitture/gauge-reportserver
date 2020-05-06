@@ -37,7 +37,6 @@ func SendArchive(url, filePath string) (err error) {
 	}
 	// add auto unzip param to request
 	_ = writer.WriteField("unzip", "true")
-
 	// close the multipart writer.
 	// If you don't close it, your request will be missing the terminating boundary.
 	if err = writer.Close(); err != nil {
@@ -50,7 +49,6 @@ func SendArchive(url, filePath string) (err error) {
 	}
 	// Don't forget to set the content type, this will contain the boundary.
 	req.Header.Set("Content-Type", writer.FormDataContentType())
-
 	// Submit the request
 	client := &http.Client{}
 	res, err := client.Do(req)
