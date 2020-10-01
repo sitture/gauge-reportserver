@@ -37,12 +37,13 @@ var deployDir = filepath.Join(deploy, report)
 
 func main() {
 	flag.Parse()
-	if *install {
+	switch {
+	case *install:
 		updatePluginInstallPrefix()
 		installPlugin(*pluginInstallPrefix)
-	} else if *distro {
+	case *distro:
 		createPluginDistro(*allPlatforms)
-	} else {
+	default:
 		compile()
 	}
 }
@@ -147,7 +148,7 @@ func mirrorFile(src, dst string) error {
 
 func mirrorDir(src, dst string) error {
 	fmt.Printf("Copying '%s' -> '%s'\n", src, dst)
-	err := filepath.Walk(src, func(path string, fi os.FileInfo, err error) error {
+	return filepath.Walk(src, func(path string, fi os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -160,13 +161,11 @@ func mirrorDir(src, dst string) error {
 		}
 		return mirrorFile(path, filepath.Join(dst, suffix))
 	})
-	return err
 }
 
 func set(envName, envValue string) {
 	fmt.Printf("%s = %s\n", envName, envValue)
-	err := os.Setenv(envName, envValue)
-	if err != nil {
+	if err := os.Setenv(envName, envValue); err != nil {
 		panic(err)
 	}
 }
@@ -176,8 +175,7 @@ func runProcess(command string, arg ...string) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	fmt.Printf("Execute %v\n", cmd.Args)
-	err := cmd.Run()
-	if err != nil {
+	if err := cmd.Run(); err != nil {
 		panic(err)
 	}
 }
@@ -322,20 +320,22 @@ func installPlugin(installPrefix string) {
 }
 
 func updatePluginInstallPrefix() {
-	if *pluginInstallPrefix == "" {
-		if runtime.GOOS == "windows" {
-			*pluginInstallPrefix = os.Getenv("APPDATA")
-			if *pluginInstallPrefix == "" {
-				panic(fmt.Errorf("Failed to find AppData directory"))
-			}
-			*pluginInstallPrefix = filepath.Join(*pluginInstallPrefix, gauge, plugins)
-		} else {
-			userHome := getUserHome()
-			if userHome == "" {
-				panic(fmt.Errorf("Failed to find User Home directory"))
-			}
-			*pluginInstallPrefix = filepath.Join(userHome, dotGauge, plugins)
+	if *pluginInstallPrefix != "" {
+		return
+	}
+	switch runtime.GOOS {
+	case "windows":
+		*pluginInstallPrefix = os.Getenv("APPDATA")
+		if *pluginInstallPrefix == "" {
+			panic(fmt.Errorf("Failed to find AppData directory"))
 		}
+		*pluginInstallPrefix = filepath.Join(*pluginInstallPrefix, gauge, plugins)
+	default:
+		userHome := getUserHome()
+		if userHome == "" {
+			panic(fmt.Errorf("Failed to find User Home directory"))
+		}
+		*pluginInstallPrefix = filepath.Join(userHome, dotGauge, plugins)
 	}
 }
 
@@ -344,8 +344,7 @@ func getUserHome() string {
 }
 
 func getArch() string {
-	arch := getGOARCH()
-	if arch == x86 {
+	if arch := getGOARCH(); arch == x86 {
 		return "x86"
 	}
 	return "x86_64"
@@ -355,7 +354,6 @@ func getGOARCH() string {
 	goArch := os.Getenv(GOARCH)
 	if goArch == "" {
 		return runtime.GOARCH
-
 	}
 	return goArch
 }
@@ -364,7 +362,6 @@ func getGOOS() string {
 	os := os.Getenv(goOS)
 	if os == "" {
 		return runtime.GOOS
-
 	}
 	return os
 }
