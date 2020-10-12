@@ -10,7 +10,6 @@ import (
 )
 
 func ZipDir(source, target string) error {
-
 	// check if sourceDir exists
 	if _, err := os.Stat(source); os.IsNotExist(err) {
 		return fmt.Errorf("source directory '%s' does not exist", source)
@@ -22,29 +21,19 @@ func ZipDir(source, target string) error {
 	}
 	// create a zip file at target
 	zipFile, err := os.Create(target)
-	defer func() {
-		err := zipFile.Close()
-		if err != nil {
-			return
-		}
-	}()
+	defer zipFile.Close()
 	if err != nil {
 		return fmt.Errorf("could not create the target archive at '%s'", target)
 	}
 	// create a new writer for writing into zip
 	archive := zip.NewWriter(zipFile)
-	defer func() {
-		err := archive.Close()
-		if err != nil {
-			return
-		}
-	}()
+	defer archive.Close()
 	// list of files to ignore when adding to zip
 	ignoreFiles := []string{
 		"html-report",
 		".DS_Store",
 	}
-	err = filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -85,8 +74,7 @@ func ZipDir(source, target string) error {
 		}
 		_, err = io.Copy(writer, file)
 		return err
-	})
-	if err != nil {
+	}); err != nil {
 		return err
 	}
 	if err = archive.Flush(); err != nil {

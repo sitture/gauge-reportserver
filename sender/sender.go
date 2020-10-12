@@ -15,15 +15,11 @@ func SendArchive(url, filePath string) (err error) {
 	writer := multipart.NewWriter(&b)
 	// Add your image file
 	file, err := os.Open(filePath)
-	defer func() {
-		err := file.Close()
-		if err != nil {
-			return
-		}
-	}()
 	if err != nil {
 		return fmt.Errorf("error opening the file '%s'", filePath)
 	}
+	defer file.Close()
+
 	fileStat, err := file.Stat()
 	if err != nil {
 		return fmt.Errorf("could not get file information")
@@ -32,14 +28,14 @@ func SendArchive(url, filePath string) (err error) {
 	if err != nil {
 		return fmt.Errorf("error create a form writer")
 	}
-	if _, err = io.Copy(formWriter, file); err != nil {
+	if _, err := io.Copy(formWriter, file); err != nil {
 		return fmt.Errorf("error copying file '%s' to form writer", file.Name())
 	}
 	// add auto unzip param to request
-	_ = writer.WriteField("unzip", "true")
+	writer.WriteField("unzip", "true")
 	// close the multipart writer.
 	// If you don't close it, your request will be missing the terminating boundary.
-	if err = writer.Close(); err != nil {
+	if err := writer.Close(); err != nil {
 		return err
 	}
 	// Now that you have a form, you can submit it to your handler.
@@ -55,7 +51,6 @@ func SendArchive(url, filePath string) (err error) {
 	if err != nil {
 		return err
 	}
-
 	// Check the response
 	if res.StatusCode != http.StatusOK {
 		return fmt.Errorf("bad status: %s", res.Status)

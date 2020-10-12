@@ -55,34 +55,32 @@ func (listener *Listener) Start() {
 func (listener *Listener) ProcessMessages(buffer *bytes.Buffer) {
 	for {
 		messageLength, bytesRead := proto.DecodeVarint(buffer.Bytes())
-		if messageLength > 0 && messageLength < uint64(buffer.Len()) {
-			message := &gauge_messages.Message{}
-			messageBoundary := int(messageLength) + bytesRead
-			messageBytes := buffer.Bytes()[bytesRead:messageBoundary]
-			err := proto.Unmarshal(messageBytes, message)
+		if messageLength <= 0 || messageLength >= uint64(buffer.Len()) {
+			return
+		}
+		message := &gauge_messages.Message{}
+		messageBoundary := int(messageLength) + bytesRead
+		messageBytes := buffer.Bytes()[bytesRead:messageBoundary]
+		if err := proto.Unmarshal(messageBytes, message); err != nil {
+			logger.Warnf("Failed to read proto message: %s\n", err.Error())
+			logger.Warnf("Message : %s\n", string(messageBytes))
+			continue
+		}
+		switch message.MessageType {
+		case gauge_messages.Message_KillProcessRequest:
+			logger.Debug("Received Kill Message, exiting...")
+			listener.onKillProcessRequestHandler(message.GetKillProcessRequest())
+			err := listener.connection.Close()
 			if err != nil {
-				logger.Warnf("Failed to read proto message: %s\n", err.Error())
-				logger.Warnf("Message : %s\n", string(messageBytes))
-			} else {
-				switch message.MessageType {
-				case gauge_messages.Message_KillProcessRequest:
-					logger.Debug("Received Kill Message, exiting...")
-					listener.onKillProcessRequestHandler(message.GetKillProcessRequest())
-					err := listener.connection.Close()
-					if err != nil {
-						logger.Debug("Failed to close the listener connection.")
-					}
-					os.Exit(0)
-				case gauge_messages.Message_SuiteExecutionResult:
-					go listener.sendPings()
-					listener.onResultHandler(message.GetSuiteExecutionResult())
-				}
-				buffer.Next(messageBoundary)
-				if buffer.Len() == 0 {
-					return
-				}
+				logger.Debug("Failed to close the listener connection.")
 			}
-		} else {
+			os.Exit(0)
+		case gauge_messages.Message_SuiteExecutionResult:
+			go listener.sendPings()
+			listener.onResultHandler(message.GetSuiteExecutionResult())
+		}
+		buffer.Next(messageBoundary)
+		if buffer.Len() == 0 {
 			return
 		}
 	}
@@ -102,13 +100,12 @@ func (listener *Listener) sendPings() {
 	ping := func(b []byte, c net.Conn) {
 		logger.Debug("reportserver sending a keep-alive ping")
 		l := proto.EncodeVarint(uint64(len(b)))
-		_, err := c.Write(append(l, b...))
-		if err != nil {
+		if _, err := c.Write(append(l, b...)); err != nil {
 			logger.Debugf("Unable to send ping message, %s", err.Error())
 		}
 	}
 	ticker := time.NewTicker(interval())
-	defer func() { ticker.Stop() }()
+	defer ticker.Stop()
 
 	for {
 		select {

@@ -102,8 +102,7 @@ func ReadLogsFile(logsFilePath string) (logLineExists bool) {
 		return
 	}
 	start := stat.Size() - 512
-	_, err = file.ReadAt(buf, start)
-	if err == nil {
+	if _, err = file.ReadAt(buf, start); err == nil {
 		logLineExists = strings.Contains(string(buf), logLine)
 	}
 	return
@@ -136,9 +135,8 @@ func SendReport(stop chan bool) {
 		return
 	}
 	reportPath := env.GetReportServerUrl()
-	err := sender.SendArchive(reportPath, ArchiveDestination())
-	if err != nil {
-		logger.Infof("Could not send the archive from '%s' to '%s'\n%s\n", ArchiveDestination(), reportPath, err.Error())
+	if err := sender.SendArchive(reportPath, ArchiveDestination()); err != nil {
+		logger.Infof("Could not send the archive from '%s' to '%s'\n%s\n", ArchiveDestination(), reportPath, err)
 	} else {
 		logger.Infof("Successfully sent html-report to reportserver => %s\n", filepath.Join(reportPath, "report.html"))
 	}
