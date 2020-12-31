@@ -1,6 +1,6 @@
 {
   "id" : "reportserver",
-  "version" : "0.2.0",
+  "version" : "0.3.0",
   "name" : "Report Server",
   "description" : "Plugin for sending results to HTTP file server",
   "install": {
@@ -13,11 +13,12 @@
     "linux" : ["bin/reportserver"],
     "darwin" : ["bin/reportserver"]
   },
-  "scope" : ["execution"],
+  "scope" : ["Execution"],
   "gaugeVersionSupport": {
-    "minimum": "1.0.6",
+    "minimum": "1.0.7",
     "maximum": ""
   },
-  "capabilities" : [
+  "capabilities": [
+    "grpc_support"
   ]
 }
