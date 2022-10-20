@@ -1,6 +1,6 @@
 {
   "id" : "reportserver",
-  "version" : "0.3.0",
+  "version" : "0.4.0",
   "name" : "Report Server",
   "description" : "Plugin for sending results to HTTP file server",
   "install": {

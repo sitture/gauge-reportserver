@@ -58,7 +58,7 @@ func GetEnv(envKey string, exitOnMissing bool) (value string) {
 	if len(value) == 0 && exitOnMissing {
 		panic(fmt.Sprintf("Environment variable '%s' is not set. \n", envKey))
 	}
-	return
+	return``
 }
 
 func GetEnvWithDefault(env, defaultValue string) (value string) {
