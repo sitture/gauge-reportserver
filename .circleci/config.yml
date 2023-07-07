@@ -7,13 +7,6 @@ jobs:
     steps:
       - checkout
       - run:
-          command: |
-            go install github.com/github-release/github-release
-            echo $GOPATH
-            ls -l $GOPATH/bin/
-            ls -l $GOPATH/
-            github-release --help
-      - run:
           name: Get all dependencies
           command: go get ./...
       - run:
@@ -30,7 +23,7 @@ jobs:
       - checkout
       - run:
           name: Install github-release
-          command: go get -v -u github.com/github-release/github-release
+          command: go install github.com/github-release/github-release
       - run:
           name: Get all dependencies
           command: go get ./...
