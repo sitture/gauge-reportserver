@@ -9,6 +9,7 @@ jobs:
       - run:
           command: |
             go get -v -u github.com/github-release/github-release
+            ls -l bin/
             echo $GOPATH
             ls -l $GOPATH/bin/
             github-release --help
