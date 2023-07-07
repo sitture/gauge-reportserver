@@ -9,7 +9,7 @@ jobs:
       - run:
           command: |
             - go get -v -u github.com/github-release/github-release
-            - github-release --info
+            - github-release -info
       - run:
           name: Get all dependencies
           command: go get ./...
