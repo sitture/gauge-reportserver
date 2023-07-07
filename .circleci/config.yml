@@ -7,6 +7,10 @@ jobs:
     steps:
       - checkout
       - run:
+          command: |
+            - go get -v -u github.com/github-release/github-release
+            - github-release --info
+      - run:
           name: Get all dependencies
           command: go get ./...
       - run:
@@ -22,11 +26,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install github-release
+          command: go get -v -u github.com/github-release/github-release
+      - run:
           name: Get all dependencies
           command: go get ./...
-      - run:
-          name: Install github-release
-          command: go get -v -u github.com/aktau/github-release
       - run:
           name: Build and Release
           command: .circleci/release.sh
