@@ -12,7 +12,7 @@ jobs:
             echo $GOPATH
             ls -l $GOPATH/bin/
             ls -l $GOPATH/
-            github-release --help
+            $GOPATH/bin/github-release --help
       - run:
           name: Get all dependencies
           command: go get ./...
