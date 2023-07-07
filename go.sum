@@ -21,6 +21,8 @@ github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZm
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/dmotylev/goproperties v0.0.0-20140630191356-7cbffbaada47 h1:sP2APvSdZpfBiousrppBZNOvu+TE79Myq4kkmmrtSuI=
 github.com/dmotylev/goproperties v0.0.0-20140630191356-7cbffbaada47/go.mod h1:f2V6964+f0p8Asqy8mIK5cKyyVc6MP9PFzGVNRcnYJQ=
+github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=
+github.com/dustin/go-humanize v1.0.1/go.mod h1:Mu1zIs6XwVuF/gI1OepvI0qD18qycQx+mFykh5fBlto=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/getgauge/common v0.0.0-20200824023809-24587c106922 h1:/KwwglTNoofndO0RhEPY750erewl4uAL+WbfN+nLkVs=
 github.com/getgauge/common v0.0.0-20200824023809-24587c106922/go.mod h1:e3V+gYeNMZt9gGaHqxwnVAwrewx6uauCqT+IE0vZhM8=
@@ -31,6 +33,8 @@ github.com/getgauge/gauge v1.1.6/go.mod h1:9Il7VW/L5FUjG6W/L1yv+j43+qLq9Qu3IEbIv
 github.com/getgauge/gauge v1.5.1 h1:XxXiZC/BIwhvR7sx1QEWuIe6WEOrlUu/e6DyLdNaY3o=
 github.com/getgauge/gauge v1.5.1/go.mod h1:GnOQlT7MANyiSdHJ3ocbtTV6sf+lamKU/8RhvO3TvTA=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
+github.com/github-release/github-release v0.10.0 h1:nJ3oEV2JrC0brYi6B8CsXumn/ORFeiAEOB2fwN9epOw=
+github.com/github-release/github-release v0.10.0/go.mod h1:CcaWgA5VoBGz94mOHYIXavqUA8kADNZxU+5/oDQxF6o=
 github.com/go-check/check v0.0.0-20190902080502-41f04d3bba15/go.mod h1:9ES+weclKsC9YodN5RgxqK/VD9HM9JsCSh7rNhMZE98=
 github.com/go-kit/kit v0.8.0/go.mod h1:xBxKIO96dXMWWy0MnWVtmwkA9/13aqxPnvrjFYMA2as=
 github.com/go-logfmt/logfmt v0.3.0/go.mod h1:Qt1PoO58o5twSAckw1HlFXLmHsOX5/0LbT9GBnD5lWE=
@@ -72,6 +76,8 @@ github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
+github.com/kevinburke/rest v0.0.0-20230306061549-8f487d822ad0 h1:2b9anKtyO/UTUQb+TAdPAW+w0p9xCIvng4fdZJ2xsYk=
+github.com/kevinburke/rest v0.0.0-20230306061549-8f487d822ad0/go.mod h1:pD+iEcdAGVXld5foVN4e24zb/6fnb60tgZPZ3P/3T/I=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
@@ -125,7 +131,11 @@ github.com/spf13/viper v1.4.0/go.mod h1:PTJ7Z/lr49W6bUbkmS1V3by4uWynFiR9p7+dSq/y
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
+github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 h1:nrZ3ySNYwJbSpD6ce9duiP+QkD3JuLCcWkdaehUS/3Y=
+github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80/go.mod h1:iFyPdL66DjUD96XmzVL3ZntbzcflLnznH0fr99w5VqE=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
+github.com/voxelbrain/goptions v0.0.0-20180630082107-58cddc247ea2 h1:txplJASvd6b/hrE0s/Ixfpp2cuwH9IO9oZBAN9iYa4A=
+github.com/voxelbrain/goptions v0.0.0-20180630082107-58cddc247ea2/go.mod h1:DGCIhurYgnLz8J9ga1fMV/fbLDyUvTyrWXVWUIyJon4=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

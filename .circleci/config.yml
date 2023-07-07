@@ -8,11 +8,11 @@ jobs:
       - checkout
       - run:
           command: |
-            go get -v -u github.com/github-release/github-release
+            go install github.com/github-release/github-release
             echo $GOPATH
             ls -l $GOPATH/bin/
             ls -l $GOPATH/
-            $GOPATH/bin/github-release --help
+            github-release --help
       - run:
           name: Get all dependencies
           command: go get ./...
