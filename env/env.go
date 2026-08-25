@@ -35,7 +35,7 @@ var GetProjectDirName = func() string {
 func GetCurrentExecutableDir() (string, string) {
 	ex, err := os.Executable()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatalf("%v", err)
 	}
 	target, err := filepath.EvalSymlinks(ex)
 	if err != nil {
